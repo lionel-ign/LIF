@@ -1,0 +1,156 @@
+---
+title: ""   # will NOT be printed if include-title: false
+toc: true
+toc-location: right
+number-sections: false
+format:
+  html:
+    css:
+      - assets/css/styles.css
+      - assets/css/publications.css
+---
+
+```{r, echo=FALSE, message=FALSE}
+
+library(bibtex)
+library(dplyr)
+library(stringr)
+library(htmltools)
+library(tibble)
+
+`%||%` <- function(a, b) if (is.null(a)) b else a
+
+# ---------------- Read BibTeX ----------------
+
+bib_file <- "data/publications.bib"
+pubs <- read.bib(bib_file)
+
+# ---------------- Decode LaTeX accents ----------------
+
+decode_latex <- function(x) {
+  if (is.null(x)) return("")
+  x <- as.character(x)
+  x <- str_replace_all(x, "[{}]", "")
+  x <- str_replace_all(x, "\\\\`a", "à")
+  x <- str_replace_all(x, "\\\\'e", "é")
+  x <- str_replace_all(x, "\\\\`e", "è")
+  x <- str_replace_all(x, "\\\\^i", "î")
+  x <- str_replace_all(x, "\\\\\"o", "ö")
+  x <- str_replace_all(x, "\\\\'o", "ó")
+  x <- str_replace_all(x, "\\\\'u", "ú")
+  x <- str_replace_all(x, "\\\\`u", "ù")
+  x <- str_replace_all(x, "\\\\'a", "á")
+  x <- str_replace_all(x, "\\\\c\\s*c", "ç")
+  x
+}
+
+# ---------------- Helper: Author name format ----------------
+format_authors <- function(authors) {
+  if (!nzchar(authors)) return("")
+
+  # Split by commas (assuming BibTeX gives "First Last, First Last, ..." style)
+  people <- str_split(authors, ",\\s*")[[1]]
+
+  formatted <- sapply(people, function(p) {
+    parts <- str_split(p, "\\s+")[[1]]
+    if (length(parts) == 1) return(parts)
+    last <- tail(parts, 1)
+    initials <- paste0(substr(head(parts, -1), 1, 1), ".", collapse = "")
+    paste(last, initials)
+  })
+
+  # Collapse the vector into a single string
+  paste(formatted, collapse = ", ")
+}
+
+
+
+# ---------------- Build data frame ----------------
+
+pub_df <- tibble(
+  authors = sapply(pubs, function(x)
+  format_authors(
+    decode_latex(paste(x$author, collapse = ", "))
+  )
+),
+  year    = sapply(pubs, function(x) decode_latex(x$year %||% "")),
+  title   = sapply(pubs, function(x) decode_latex(x$title %||% "")),
+  journal = sapply(pubs, function(x)
+    decode_latex(x$journal %||% x$booktitle %||% "")
+  ),
+  volume  = sapply(pubs, function(x) decode_latex(x$volume %||% "")),
+  number  = sapply(pubs, function(x) decode_latex(x$number %||% "")),
+  pages   = sapply(pubs, function(x) decode_latex(x$pages %||% "")),
+  doi     = sapply(pubs, function(x) x$doi %||% "")
+)
+
+pub_df <- pub_df %>%
+  mutate(year_num = suppressWarnings(as.integer(year))) %>%
+  arrange(desc(year_num))
+
+# ---------------- Helper: DOI link ----------------
+
+mk_link <- function(doi) {
+  if (!nzchar(doi)) return(NULL)
+  tags$a(
+    href = paste0("https://doi.org/", doi),
+    target = "_blank",
+    rel = "noopener",
+    style = "color:blue; text-decoration:underline;",
+    paste0("⟨", doi, "⟩")
+  )
+}
+
+# ---------------- Render collapsible year sections ----------------
+
+years <- sort(unique(pub_df$year_num), decreasing = TRUE)
+
+year_sections <- lapply(years, function(y) {
+
+  pubs_in_year <- pub_df %>% filter(year_num == y)
+
+  cards <- lapply(seq_len(nrow(pubs_in_year)), function(i) {
+    row <- pubs_in_year[i, ]
+
+    parts <- tagList(
+      if (nzchar(row$authors)) paste0(row$authors, ". "),
+      if (nzchar(row$title)) tags$b(paste0(row$title, ". ")),
+      if (nzchar(row$year)) paste0(row$year, ". "),
+      if (nzchar(row$journal)) {
+        vol_info <- paste0(
+          row$volume,
+          if (nzchar(row$number)) paste0(" (", row$number, ")") else "",
+          if (nzchar(row$pages)) paste0(": ", row$pages) else ""
+        )
+        tags$span(
+          style = "font-style:italic;",
+          paste0(row$journal,
+                 if (nzchar(vol_info)) paste0(", ", vol_info, ".") else "")
+        )
+      },
+      if (nzchar(row$doi)) tagList(" ", mk_link(row$doi))
+    )
+
+    tags$p(parts, class = "pub-entry",
+           style = "margin-bottom: 0.8em;")
+  })
+
+  tags$details(
+    open = (y == max(years)),
+    tags$summary(tags$strong(y)),
+    tagList(cards)
+  )
+})
+
+# ---------------- Full page ----------------
+
+ui <- tags$div(
+  class = "publications-root",
+  tags$h2("Publications"),
+  tagList(year_sections)
+)
+
+htmltools::browsable(ui)
+
+
+```

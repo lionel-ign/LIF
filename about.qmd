@@ -1,0 +1,88 @@
+---
+title: ""
+---
+
+![About LIF](assets/images/afterfire_banner.JPG)
+
+# About LIF – Laboratory of Forest Inventory
+
+## Mission & Vision
+
+Founded in 2013–2014, the laboratory carries out research **in support of, and driven by, the National Forest Inventory (NFI)**. Our research aims to develop robust and “smart” forest information and monitoring systems capable of capturing **ecological, climatic, and biomass- and carbon-related transitions**.
+
+We focus on:
+
+-   **Advancing the statistical design and scientific foundations of forest inventories**
+
+-   **Developing multi-source approaches that integrate field data and remote sensing**
+
+-   **Designing new indicators and information systems** to address emerging environmental challenges
+
+------------------------------------------------------------------------
+
+## Location & Academic Ecosystem
+
+LIF is located in **Nancy**, within a stimulating academic and scientific environment. The laboratory collaborates closely with leading research and higher-education institutions, including **AgroParisTech, INRAE, and the University of Lorraine**.
+
+This ecosystem fosters cross-disciplinary research at the interface of **environmental sciences, applied mathematics, statistics, modelling, data science, economics, forest policy, and remote sensing**, enabling **methodological innovation in forest information and inventory science** and supporting a **better understanding of forest dynamics under climate and management transitions**.
+
+14, Rue Girardet\
+54000 Nancy, France\
+48.693745 , 6.188063
+
+------------------------------------------------------------------------
+
+## Research & Innovation
+
+LIF conducts research across the full **forest information workflow**, combining methodological development, data integration, and modeling to advance understanding of forest dynamics. Our research activities include:
+
+-   **Inventory methods**: continuous inventories, plot revisits, and advanced sampling designs\
+-   **Observation technologies**: LiDAR, satellite imagery, and other auxiliary data sources\
+-   **Estimation methodologies**: biometry, statistical and spatial modeling, simulation, digital twins, and inference\
+-   **Projection models**: exploring future forest scenarios under climate change and contrasted management assumptions
+
+------------------------------------------------------------------------
+
+## Oportunities & Team
+
+LIF offers a stimulating environment for students and researchers to conduct **cutting-edge methodological research**, develop advanced **data science and statistical skills**, and contribute to innovative solutions addressing major environmental challenges.
+
+The laboratory welcomes **PhD students, postdoctoral fellows, and research collaborators** and promotes an open, forward-looking research culture grounded in scientific excellence and collaboration.
+
+------------------------------------------------------------------------
+
+## History & Achievements
+
+### 2013–2014
+
+The Laboratory of Forest Inventory (LIF) was created following the fusion of IGN with the National Forest Inventory (NFI) in 2012, establishing **forest inventory research as a strategic scientific** activity within IGN.
+
+### 2015
+
+A local **partnership between IGN, AgroParisTech, and INRAE** was formalized through a Memorandum of Understanding to support the physical implementation of the laboratory on the AgroParisTech campus and to strengthen cooperation in higher education and research through a renewable four-year agreement.
+
+### 2016
+
+LIF joined the **Labex ARBRE consortium (PIA #2)**, reinforcing collaborations with INRAE, the University of Lorraine, and the regional research ecosystem. This integration strenghened our integration to the local research ecosystem, supporting collaborations ans the development of coordinated research activity. The consortium agreement expired in 2024.
+
+### 2018
+
+LIF became part of the **DEEPSURF I-SITE LUE** consortium (PIA #3), contributing to the emergence of a research community focused on natural resources and energy, while further strengthening project-based funding.
+
+### 2019
+
+The laboratory was integrated into the **SiReNa Doctoral School** of the University of Lorraine, enabling PhD project management and formal recognition by the university’s administrative council.
+
+### 2022
+
+Following LABEX ARBRE, LIF joined the interdisciplinary **ARTEMIS** program, which supports ecological and industrial transitions through adaptation to and mitigation of global change in forest socio-ecosystems.
+
+### 2023
+
+LIF signed a 5 years partnership with **INRAE, department ECODIV,** through a convention of contract unit (USC). This partnership favours project collaboration in larger national Clusters.
+
+### 2025
+
+A cooperation agreement between **GéoData Paris and AgroParisTech** is signed to establish a joint final-year engineering program. Formalized through a Memorandum of Understanding in February 2025, the program aims to train students in forest inventory, decision-support approaches, and resource information, with the first cohort starting in the 2026 academic year.
+
+LIF also signed a partnership with the **University of Lorraine** aimed at developing cooperation in the fields of research, higher education, and innovation.

@@ -1,0 +1,179 @@
+---
+title: ""
+toc: true
+toc-location: right
+number-sections: false
+anchor-sections: true
+format:
+  html:
+    css:
+      - assets/css/team.css
+execute:
+  echo: false
+  warning: false
+  message: false
+  working-dir: project
+---
+
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+
+library(readr)
+library(dplyr)
+library(glue)
+library(stringr)
+
+# -----------------------
+# Helpers (100% safe)
+# -----------------------
+to_chr <- function(x) {
+  if (length(x) == 0 || is.na(x)) "" else as.character(x)
+}
+
+not_empty <- function(x) {
+  x <- to_chr(x)
+  nzchar(x)
+}
+
+# -----------------------
+# Read & prepare data
+# -----------------------
+team <- read_csv2("data/team.csv", locale = locale(encoding = "UTF-8")) %>%
+  mutate(
+    group = tolower(trimws(group)),
+    role  = trimws(role)
+  ) %>%
+  filter(visible == TRUE) %>%
+  arrange(order)
+
+# -----------------------
+# Card renderer
+# -----------------------
+render_card <- function(m){
+
+  # Photo
+  photo <- if (not_empty(m$photo)) {
+    paste0("assets/images/personnels/", to_chr(m$photo))
+  } else {
+    "assets/images/personnels/avatar_defaut.PNG"
+  }
+
+  # Links
+  links <- c()
+  if (not_empty(m$email))   links <- c(links, glue('<a href="mailto:{to_chr(m$email)}">Mail</a>'))
+  if (not_empty(m$orcid))   links <- c(links, glue('<a href="{to_chr(m$orcid)}" target="_blank">ORCID</a>'))
+  if (not_empty(m$scholar)) links <- c(links, glue('<a href="{to_chr(m$scholar)}" target="_blank">Scholar</a>'))
+  if (not_empty(m$web))     links <- c(links, glue('<a href="{to_chr(m$web)}" target="_blank">Web</a>'))
+  links_html <- paste(links, collapse = " ")
+
+  # Expandable content
+  expand_content <- c()
+
+  if (not_empty(m$research_interests))
+    expand_content <- c(expand_content,
+      glue("<strong>Research interests:</strong> {to_chr(m$research_interests)}"))
+
+  if (not_empty(m$bio))
+    expand_content <- c(expand_content,
+      glue("<strong>Bio:</strong> {to_chr(m$bio)}"))
+
+  # Supervisor info (students only)
+  if (m$group == "student") {
+    if (not_empty(m$supervisor))
+      expand_content <- c(expand_content,
+        glue("<strong>Supervisor:</strong> {to_chr(m$supervisor)}"))
+    if (not_empty(m$co_supervisor))
+      expand_content <- c(expand_content,
+        glue("<strong>Co-supervisor:</strong> {to_chr(m$co_supervisor)}"))
+  }
+
+  show_more <- length(expand_content) > 0
+
+  expand_html <- if (show_more) {
+    glue('<div class="expandable-content">{paste(expand_content, collapse="<br>")}</div>')
+  } else {
+    ""
+  }
+
+  button_html <- if (show_more) {
+  '<button class="expand-btn">Show more</button>'
+} else {
+  ""
+}
+
+cat(glue('
+  <div class="team-card">
+    <img src="{photo}" alt="{to_chr(m$prenom)} {to_chr(m$nom)}" class="profile-pic"/>
+    <h3>{to_chr(m$prenom)} {to_chr(m$nom)}</h3>
+    <p class="role-affiliation">{to_chr(m$role)}<br>{to_chr(m$affiliation)}</p>
+    <p>{links_html}</p>
+    {button_html}
+    {expand_html}
+  </div>
+'))
+
+}
+
+# -----------------------
+# Section renderer (cards)
+# -----------------------
+render_section_cards <- function(title, grp){
+  members <- team %>% filter(group == grp)
+  if (nrow(members) == 0) return()
+
+  cat(glue("## {title}\n\n"))
+  cat('<div class="team-container">\n')
+  for (i in seq_len(nrow(members))) render_card(members[i, ])
+  cat('</div>\n\n')
+}
+
+# -----------------------
+# Alumni / Former (simple list)
+# -----------------------
+render_former <- function(){
+
+  members <- team %>% filter(group == "alumni")
+  if (nrow(members) == 0) return()
+
+  cat("## Graduated PhDs\n\n<ul>\n")
+
+  for (i in seq_len(nrow(members))) {
+    m <- members[i, ]
+
+    item <- paste0(
+      "<li><strong>",
+      to_chr(m$prenom), " ", to_chr(m$nom),
+      "</strong>",
+      if (not_empty(m$end)) paste0(" (", to_chr(m$end), ")") else "",
+      if (not_empty(m$bio)) paste0("<br>", to_chr(m$bio)) else "",
+      "</li>\n"
+    )
+
+    cat(item)
+  }
+
+  cat("</ul>\n\n")
+}
+
+
+# -----------------------
+# Render page
+# -----------------------
+render_section_cards("Staff in place", "staff")
+render_section_cards("Affiliated members", "affiliated")
+render_section_cards("Postdoctoral fellows", "postdoc")
+render_section_cards("PhD students", "student")
+render_former()
+
+```
+
+```{=html}
+<script>
+document.querySelectorAll('.expand-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    btn.classList.toggle('active');
+    const content = btn.nextElementSibling;
+    if(content) content.style.display = (content.style.display === 'block') ? 'none' : 'block';
+  });
+});
+</script>
+```

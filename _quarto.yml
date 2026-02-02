@@ -1,0 +1,45 @@
+project:
+  type: website
+  output-dir: docs
+  
+website:
+  title: ""
+  description: "Laboratory of Forest Inventory website."
+  navbar:
+    logo: assets/images/logo_lif_transp.png
+    left:
+      - href: index.qmd
+        text: Home
+      - href: team.qmd
+        text: Staff
+      - href: publications.qmd
+        text: Publications
+      - href: projects.qmd
+        text: Projects
+      - href: joinus.qmd
+        text: Join us
+    right:
+      - href: "https://geodata-paris.fr/"
+        text: '<img src="assets/images/geodata_paris_logo.png" style="height:30px; margin-right:0.5em;">'
+      - href: "https://www.ign.fr/"
+        text: '<img src="assets/images/ign_logo.png" style="height:30px; margin-right:0.5em;">'
+      - href: about.qmd
+        text: About
+
+format:
+  html:
+    # include-in-header:
+    #   - assets/html/meta.html
+    theme:
+      - cosmo
+    css: 
+      - assets/css/styles.css
+      - assets/css/publications.css
+      - assets/css/team.css
+      - assets/css/projects.css
+    toc: true
+execute:
+  echo: false
+  working-dir: project
+editor: visual
+

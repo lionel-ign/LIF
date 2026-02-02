@@ -1,0 +1,45 @@
+---
+title: "Welcome to LIF – Laboratory of Forest Inventory"
+format: html
+---
+
+<!-- Top banner image -->
+
+![](assets/images/forest_banner.jpg){width="100%"}
+
+------------------------------------------------------------------------
+
+The Laboratory of Forest Inventory (LIF) is a research unit of **GéoData Paris**, within the **French National Institute of Geographic and Forest Information (IGN)**.
+
+Located in Nancy on a historic forestry and engineering campus, now part of **AgroParisTech**, LIF works at the intersection of forest science, data science, and decision support.
+
+**Our mission** is to develop innovative methods for forest monitoring and inventory by combining **field observations, remote sensing, and statistical modelling**. Our work supports **sustainable forest management**, environmental assessment, and responses to **ecological and climate transitions**.
+
+LIF is embedded in a strong academic ecosystem and collaborates closely with leading research and higher-education partners, including **Université de Lorraine (UL), INRAE, and AgroParisTech (APT)**.
+
+::: {style="display:flex; flex-wrap:wrap; justify-content:center; gap:4em; align-items:center; margin:2em 0;"}
+<img src="assets/images/ul_logo.png" alt="Université de Lorraine" style="height:60px;"/> <img src="assets/images/inrae_logo.png" alt="INRAE" style="height:60px;"/> <img src="assets/images/apt_logo.png" alt="AgroParisTech" style="height:60px;"/>
+:::
+
+------------------------------------------------------------------------
+
+## Explore LIF
+
+::: {style="display:flex; flex-direction: column; gap: 1em;"}
+-   <a href="projects.html">Ongoing projects</a> – advancing forest inventory and data-driven forest information
+-   <a href="publications.html">Publications</a> – scientific contributions to forest information, monitoring, and remote sensing
+-   <a href="about.html">Meet us</a> – history, expertise and capacity building
+-   <a href="join.html">Join us</a> – career and internship opportunities in a stimulating scientific environment
+:::
+
+------------------------------------------------------------------------
+
+<!-- Photo en bas de page -->
+
+```{=html}
+<img src="assets/images/forest_bottom.jpg" 
+     alt="Forest Scene" 
+     style="width:100%; margin-top:2em; display:block;">
+```
+
+------------------------------------------------------------------------

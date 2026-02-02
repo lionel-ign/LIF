@@ -1,0 +1,103 @@
+---
+title: ""
+toc: true
+toc-location: right
+number-sections: false
+format:
+  html:
+    css:
+      - assets/css/joinus.css
+---
+
+![Join LIF](assets/images/mountain_banner.JPG){width="100%"}
+
+```{r,echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+
+library(readr)
+library(dplyr)
+library(stringr)
+library(htmltools)
+library(lubridate)
+library(knitr)
+
+# ----------- Introduction text ---------------
+
+cat("
+<p><strong>Job opportunities at IGN</strong></p>
+
+<p>
+All current job offers at IGN are published on the official recruitment website:<br>
+<a href='https://www.ign.fr/nous-rejoindre/offres-emploi' target='_blank' rel='noopener'>
+https://www.ign.fr/nous-rejoindre/offres-emploi
+</a>
+</p>
+
+<p>
+Below is a selection of <strong>job offers specifically related to our laboratory in Nancy</strong>.
+For each position, the <strong>reference number</strong> corresponds to the official listing on the IGN website.
+</p>
+")
+
+# ----------- Read and filter job offers ---------------
+jobs <- read_delim(
+  "data/ign_jobs.csv",
+  delim = ";",
+  trim_ws = TRUE,
+  show_col_types = FALSE
+)
+
+today <- Sys.Date()
+
+jobs_nancy <- jobs |>
+  mutate(
+    Location = str_trim(Location),
+    publish_date = as.Date(publish_date),
+    expiry_date  = as.Date(expiry_date)
+  ) |>
+  filter(
+    str_to_lower(Location) == "nancy",
+    is.na(expiry_date) | expiry_date >= today
+  )
+
+
+# ----------- Render helpers ---------------
+# Helper function to render a job card
+render_job <- function(j) {
+
+  pieces <- c()
+  if (!is.na(j$Contract) && nzchar(j$Contract))
+    pieces <- c(pieces, j$Contract)
+
+  header_line <- paste(pieces, collapse = " · ")
+
+  tags$div(class = "job-card",
+    tags$h3(
+      HTML("<span style='color:#1f77b4;font-weight:bold;'>&#9679;</span> "),
+      j$Title
+    ),
+
+    if (nzchar(header_line))
+      tags$p(class = "job-meta", header_line),
+
+    if (!is.na(j$Description) && nzchar(j$Description))
+      tags$p(j$Description),
+
+    if (!is.na(j$ref) && nzchar(j$ref))
+      tags$p(class = "job-ref", tags$em(paste("Reference:", j$ref)))
+  )
+}
+
+# Display the jobs
+if (nrow(jobs_nancy) == 0) {
+  cat("<p><em>There are currently no job offers available for our laboratory in Nancy.</em></p>")
+} else {
+  ui <- tags$div(
+    class = "jobs-list",
+    lapply(seq_len(nrow(jobs_nancy)), function(i) {
+      render_job(jobs_nancy[i, ])
+    })
+  )
+  knitr::asis_output(htmltools::renderTags(ui)$html)
+}
+
+```

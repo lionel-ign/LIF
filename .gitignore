@@ -1,0 +1,24 @@
+/.quarto/
+**/*.quarto_ipynb
+
+# RStudio project files
+.Rproj.user/
+
+# Quarto output folder
+_site/
+
+# R Markdown/Quarto cache folders
+_cache/
+.nb.html
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.Rhistory
+*.RData
+*.Ruserdata
+
+# Quarto project checkpoints
+.quarto/

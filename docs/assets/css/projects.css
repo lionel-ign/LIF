@@ -1,0 +1,31 @@
+.projects-root {
+  margin-top: 1rem;
+}
+
+.project-card {
+  margin-bottom: 1.8rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.project-card h3 {
+  margin-bottom: 0.4rem;
+}
+
+.project-meta {
+  font-size: 0.9em;
+  color: #555;
+}
+
+.project-desc {
+  margin-top: 0.6rem;
+}
+
+.project-card a {
+  color: #005bbb;
+  text-decoration: underline;
+}
+
+.hidden-project {
+  display: none;
+}

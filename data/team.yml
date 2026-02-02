@@ -1,0 +1,19 @@
+project:
+  type: website
+
+website:
+  title: "LIF"
+  navbar:
+    logo: assets/images/lif_logo_transparent_40px.png
+    left:
+      - href: index.qmd
+        text: Home
+      - href: members.qmd
+        text: Members
+
+format:
+  html:
+    theme: cosmo
+    css:
+      - assets/css/styles.css
+      - assets/css/members.css

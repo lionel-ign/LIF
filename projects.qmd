@@ -1,0 +1,171 @@
+---
+title: ""
+toc: true
+toc-location: right
+number-sections: false
+format:
+  html:
+    css:
+      - assets/css/projects.css
+---
+
+```{r, echo=FALSE, results='asis', message=FALSE, warning=FALSE}
+library(readr)
+library(dplyr)
+library(stringr)
+library(htmltools)
+library(knitr)
+
+# -------------------------------
+# Helpers
+# -------------------------------
+clean_chr <- function(x) {
+  x <- as.character(x)
+  x <- str_replace_all(x, "[\u201C\u201D]", "")
+  x <- str_remove_all(x, '^"+|"+$')
+  x <- str_remove_all(x, '"')
+  str_trim(x)
+}
+
+get_chr <- function(p, col) {
+  if (!col %in% names(p)) return("")
+  x <- as.character(p[[col]])
+  if (length(x) == 0 || is.na(x)) "" else x
+}
+
+format_duration <- function(years) {
+  if (is.na(years)) return("")
+  if (years == floor(years)) {
+    paste0(as.integer(years), " years")
+  } else {
+    paste0(years, " years")
+  }
+}
+
+project_title <- function(p) {
+  short <- get_chr(p, "Short_title")
+  full  <- get_chr(p, "Full_title")
+  paste(
+    if (nzchar(short)) short else NULL,
+    if (nzchar(full))  full  else NULL,
+    sep = " – "
+  )
+}
+
+# -------------------------------
+# Read & clean CSV
+# -------------------------------
+projects <- read_delim(
+  "data/projects.csv",
+  delim = ";",
+  quote = '"',
+  trim_ws = TRUE,
+  show_col_types = FALSE
+) |>
+  mutate(across(where(is.character), clean_chr)) |>
+  filter(!if_all(everything(), is.na))
+
+# -------------------------------
+# Split ongoing / past
+# -------------------------------
+current_year <- as.numeric(format(Sys.Date(), "%Y"))
+
+projects_ongoing <- projects |>
+  filter(is.na(end_year) | end_year >= current_year) |>
+  arrange(desc(start_year))  # budget removed
+
+projects_past <- projects |>
+  filter(!is.na(end_year) & end_year < current_year) |>
+  arrange(desc(end_year))    # budget removed
+
+# -------------------------------
+# Render one project
+# -------------------------------
+render_project <- function(p) {
+
+  pieces <- c()
+
+  funder <- get_chr(p, "Funder")
+  duration <- format_duration(p[["Projet_duration"]])
+
+  years <- ""
+  if (!is.na(p[["start_year"]]) && !is.na(p[["end_year"]])) {
+    years <- paste0(p[["start_year"]], "–", p[["end_year"]])
+  }
+
+  if (nzchar(funder))   pieces <- c(pieces, funder)
+  if (nzchar(duration)) pieces <- c(pieces, duration)
+  if (nzchar(years))    pieces <- c(pieces, years)
+
+  tags$div(
+    class = "project",
+
+    # Title
+    tags$h3(
+      HTML('<span style="color:#1f77b4;font-weight:bold;">&#9679;</span> '),
+      project_title(p)
+    ),
+
+    # Meta line
+    if (length(pieces))
+      tags$p(paste(pieces, collapse = " · ")),
+
+    # PI
+    if (nzchar(get_chr(p, "PI")))
+      tags$p(tags$strong("PI: "), get_chr(p, "PI")),
+
+    # LIF staff
+    if (nzchar(get_chr(p, "LIF_Staff")))
+      tags$p(tags$strong("LIF staff: "), get_chr(p, "LIF_Staff")),
+
+    # Description
+    if (nzchar(get_chr(p, "description")))
+      tags$p(get_chr(p, "description")),
+
+    # Short-term staff / trainees
+    if (nzchar(get_chr(p, "stud_ing")))
+      tags$p(
+        tags$strong("Short-term staff / trainees: "),
+        get_chr(p, "stud_ing")
+      ),
+
+    # Website
+    if (nzchar(get_chr(p, "website")))
+      tags$p(
+        tags$strong("Website: "),
+        tags$a(
+          href = get_chr(p, "website"),
+          target = "_blank",
+          rel = "noopener",
+          get_chr(p, "website")
+        )
+      )
+  )
+}
+
+# -------------------------------
+# Render section (collapsible)
+# -------------------------------
+render_projects_section <- function(df, title, open = TRUE) {
+  if (nrow(df) == 0) return(NULL)
+
+  tags$details(
+    open = if (open) NA else NULL,
+    tags$summary(tags$h2(title)),
+    lapply(seq_len(nrow(df)), function(i) render_project(df[i, ]))
+  )
+}
+
+# -------------------------------
+# UI
+# -------------------------------
+ui <- tags$div(
+  class = "projects-root",
+  render_projects_section(projects_ongoing, "Ongoing projects", open = TRUE),
+  render_projects_section(projects_past, "Past projects", open = FALSE)
+)
+
+knitr::asis_output(renderTags(ui)$html)
+invisible(NULL)
+
+```
